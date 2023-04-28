@@ -23,6 +23,9 @@ class ExerciseActivity : AppCompatActivity() {
     private var exerciseProgress = 0
     private var exerciseTime = 30
 
+    private var exerciseList : ArrayList<ExerciseModel>? = null
+    private var currentExercisePosition = -1
+
     /*  Declaration of  GLOBAL VARIABLES ends */
 
 
@@ -43,6 +46,10 @@ class ExerciseActivity : AppCompatActivity() {
         }
         /* Enabling the Toolbar as an ActionBar ends */
 
+        /* Creating the Default Exercise list instance starts */
+        exerciseList = Constants.defaultExerciseList()
+        /* Creating the Default Exercise list instance starts */
+
         /* Enabling back navigation button starts */
         binding?.toolbarExercise?.setNavigationOnClickListener {
             onBackPressed()
@@ -57,6 +64,13 @@ class ExerciseActivity : AppCompatActivity() {
 
     /* Declaration of setupRestView function starts */
     private fun setupRestView(){
+        // Change the visibility from restProgress to ExerciseProgress:
+        binding?.flRestView?.visibility = View.VISIBLE
+        binding?.tvTitle?.visibility = View.VISIBLE
+        binding?.tvExerciseName?.visibility = View.INVISIBLE
+        binding?.flExerciseView?.visibility = View.INVISIBLE
+        binding?.ivImage?.visibility = View.INVISIBLE
+        //
 
         // Checks if the resTtimer is already running. if so -> cancel it:
         if(restTimer != null){
@@ -75,9 +89,11 @@ class ExerciseActivity : AppCompatActivity() {
     private fun setupExerciseView(){
 
         // Change the visibility from restProgress to ExerciseProgress:
-        binding?.flProgressBar?.visibility = View.INVISIBLE
-        binding?.tvTitle?.text = "Exercise Name"
+        binding?.flRestView?.visibility = View.INVISIBLE
+        binding?.tvTitle?.visibility = View.INVISIBLE
+        binding?.tvExerciseName?.visibility = View.VISIBLE
         binding?.flExerciseView?.visibility = View.VISIBLE
+        binding?.ivImage?.visibility = View.VISIBLE
         //
 
         // If exerciseTimer is running -> cancel it :
@@ -88,6 +104,9 @@ class ExerciseActivity : AppCompatActivity() {
         //
 
         // Set Exercise progress bar:
+        binding?.ivImage?.setImageResource(exerciseList!![currentExercisePosition].getImage())
+        binding?.tvExerciseName?.text = exerciseList!![currentExercisePosition].getName()
+
         setExerciseProgressBar()
         //
     }
@@ -110,6 +129,7 @@ class ExerciseActivity : AppCompatActivity() {
             }
             // What do you want to do when it ends:
             override fun onFinish() {
+                currentExercisePosition++
                setupExerciseView()
             }
 
@@ -139,7 +159,16 @@ class ExerciseActivity : AppCompatActivity() {
 
             // Overriding function onFinish:
             override fun onFinish() {
-                Toast.makeText(this@ExerciseActivity, "30 seconds are over, lets go to the rest view", Toast.LENGTH_SHORT).show()
+                if(currentExercisePosition < exerciseList?.size!! -1){
+                    setupRestView()
+                }else{
+                    Toast.makeText(
+                        this@ExerciseActivity,
+                        "Congratulations! You have completed the 7 minut workout.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
             }
             //
 
