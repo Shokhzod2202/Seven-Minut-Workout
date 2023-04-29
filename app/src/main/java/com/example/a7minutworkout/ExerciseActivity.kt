@@ -17,11 +17,11 @@ class ExerciseActivity : AppCompatActivity() {
 
     private var restTimer: CountDownTimer? = null // RestTimer for time you want to rest
     private var restProgress = 0
-    private var BeginningTime = 10
+    private var BeginningTime = 1
 
     private var exerciseTimer: CountDownTimer? = null
     private var exerciseProgress = 0
-    private var exerciseTime = 30
+    private var exerciseTime = 3
 
     private var exerciseList : ArrayList<ExerciseModel>? = null
     private var currentExercisePosition = -1
@@ -70,6 +70,8 @@ class ExerciseActivity : AppCompatActivity() {
         binding?.tvExerciseName?.visibility = View.INVISIBLE
         binding?.flExerciseView?.visibility = View.INVISIBLE
         binding?.ivImage?.visibility = View.INVISIBLE
+        binding?.tvUpcomingExerciseName?.visibility = View.VISIBLE
+        binding?.tvUpcomingLabel?.visibility = View.VISIBLE
         //
 
         // Checks if the resTtimer is already running. if so -> cancel it:
@@ -78,7 +80,7 @@ class ExerciseActivity : AppCompatActivity() {
             restProgress = 0
         }
         //
-
+        binding?.tvUpcomingExerciseName?.text = exerciseList!![currentExercisePosition + 1].getName()
         // Then set the rest progress bar:
         setRestProgressBar()
         //
@@ -94,6 +96,8 @@ class ExerciseActivity : AppCompatActivity() {
         binding?.tvExerciseName?.visibility = View.VISIBLE
         binding?.flExerciseView?.visibility = View.VISIBLE
         binding?.ivImage?.visibility = View.VISIBLE
+        binding?.tvUpcomingExerciseName?.visibility = View.INVISIBLE
+        binding?.tvUpcomingLabel?.visibility = View.INVISIBLE
         //
 
         // If exerciseTimer is running -> cancel it :
