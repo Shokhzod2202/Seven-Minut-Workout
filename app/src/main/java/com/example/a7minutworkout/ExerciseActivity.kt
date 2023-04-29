@@ -15,13 +15,15 @@ class ExerciseActivity : AppCompatActivity() {
     private var binding: ActivityExerciseBinding? = null
     //
 
+
     private var restTimer: CountDownTimer? = null // RestTimer for time you want to rest
     private var restProgress = 0
-    private var BeginningTime = 1
+    private var BeginningTime = 5
+    private var isOn = true
 
     private var exerciseTimer: CountDownTimer? = null
-    private var exerciseProgress = 0
-    private var exerciseTime = 3
+    private var exerciseProgress : Long = 0
+    private var exerciseTime = 10
 
     private var exerciseList : ArrayList<ExerciseModel>? = null
     private var currentExercisePosition = -1
@@ -59,6 +61,14 @@ class ExerciseActivity : AppCompatActivity() {
         /* Calling setupRestView function starts */
         setupRestView()
         /* Calling setupRestView function ends */
+        binding?.progressBarExercise?.setOnClickListener {
+            if (!isOn) {
+                setExerciseProgressBar(exerciseProgress)
+            } else {
+                pauseExerciseTimer()
+            }
+            isOn = isOn != true
+        }
     }
     /* Overriding the onCreate function ends */
 
@@ -111,7 +121,7 @@ class ExerciseActivity : AppCompatActivity() {
         binding?.ivImage?.setImageResource(exerciseList!![currentExercisePosition].getImage())
         binding?.tvExerciseName?.text = exerciseList!![currentExercisePosition].getName()
 
-        setExerciseProgressBar()
+        setExerciseProgressBar(exerciseProgress)
         //
     }
     /* Declaration of setupExerciseView function ends */
@@ -120,6 +130,7 @@ class ExerciseActivity : AppCompatActivity() {
     /* Declaration of setRestProgressBar starts */
     private fun setRestProgressBar(){
         //Data Binding:
+        binding?.progressBar?.max = BeginningTime
         binding?.progressBar?.progress = restProgress
 
         /* Creating the Object of the rest timer (instance) starts */
@@ -144,20 +155,22 @@ class ExerciseActivity : AppCompatActivity() {
     /* Declaration of setRestProgressBar ends */
 
     /* Declaration of setExerciseProgressBar starts */
-    private fun setExerciseProgressBar(){
+    private fun setExerciseProgressBar(exerciseProgressL : Long){
 
         // Assign ProgressBarExercise:
-        binding?.progressBarExercise?.progress = exerciseProgress
+        binding?.progressBarExercise?.max = exerciseTime
+        binding?.progressBarExercise?.progress = (exerciseProgress - exerciseProgressL).toInt()
         //
 
         /* Creating an exerciseTimer instance starts */
-        exerciseTimer = object: CountDownTimer(exerciseTime*1000.toLong(), 1000){
+        exerciseTimer = object: CountDownTimer(exerciseTime*1000.toLong() - exerciseProgressL, 1000){
 
             // Override function onTick:
             override fun onTick(p0: Long) {
-                exerciseProgress++
-                binding?.progressBarExercise?.progress = exerciseTime - exerciseProgress
-                binding?.tvTimerExercise?.text = (exerciseTime - exerciseProgress).toString()
+
+                exerciseProgress = exerciseTime*1000.toLong() - p0
+                binding?.progressBarExercise?.progress = ((exerciseTime*1000.toLong() - exerciseProgress)/1000).toInt()
+                binding?.tvTimerExercise?.text = (p0/1000 ).toString()
             }
             //
 
@@ -182,6 +195,13 @@ class ExerciseActivity : AppCompatActivity() {
     }
     /* Declaration of setExerciseProgressBar ends */
 
+    private fun pauseExerciseTimer(){
+        if(exerciseTimer != null){
+            exerciseTimer!!.cancel()
+        }
+    }
+
+
     /* Overriding onDestroy function starts */
     override fun onDestroy() {
         super.onDestroy()
@@ -192,7 +212,7 @@ class ExerciseActivity : AppCompatActivity() {
         }
         if(exerciseTimer != null){
             exerciseTimer?.cancel()
-            exerciseProgress = 0
+            //exerciseProgress = 0
         }
 
         binding = null
