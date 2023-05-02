@@ -1,13 +1,19 @@
 package com.example.a7minutworkout
 
+import android.media.MediaPlayer
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.example.a7minutworkout.databinding.ActivityExerciseBinding
+import java.util.*
+import kotlin.collections.ArrayList
 
-class ExerciseActivity : AppCompatActivity() {
+class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     /*  Declaration of  GLOBAL VARIABLES starts */
 
@@ -27,6 +33,9 @@ class ExerciseActivity : AppCompatActivity() {
 
     private var exerciseList : ArrayList<ExerciseModel>? = null
     private var currentExercisePosition = -1
+
+    private var tts: TextToSpeech? = null
+    private var player: MediaPlayer? = null
 
     /*  Declaration of  GLOBAL VARIABLES ends */
 
@@ -52,6 +61,10 @@ class ExerciseActivity : AppCompatActivity() {
         exerciseList = Constants.defaultExerciseList()
         /* Creating the Default Exercise list instance starts */
 
+        /* Creating Text to speech object  start */
+        tts = TextToSpeech(this, this)
+        /* Creating Text to speech object  start */
+
         /* Enabling back navigation button starts */
         binding?.toolbarExercise?.setNavigationOnClickListener {
             onBackPressed()
@@ -74,6 +87,17 @@ class ExerciseActivity : AppCompatActivity() {
 
     /* Declaration of setupRestView function starts */
     private fun setupRestView(){
+
+        try{
+            val soundURI =
+                Uri.parse("android.resource://com.example.a7minutworkout/" + R.raw.press_start)
+            player = MediaPlayer.create(applicationContext, soundURI)
+            player?.isLooping = false
+            player?.start()
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+
         // Change the visibility from restProgress to ExerciseProgress:
         binding?.flRestView?.visibility = View.VISIBLE
         binding?.tvTitle?.visibility = View.VISIBLE
@@ -116,6 +140,10 @@ class ExerciseActivity : AppCompatActivity() {
             exerciseProgress = 0
         }
         //
+
+        // Speak out the Exercise name:
+        speakOut(exerciseList!![currentExercisePosition].getName())
+
 
         // Set Exercise progress bar:
         binding?.ivImage?.setImageResource(exerciseList!![currentExercisePosition].getImage())
@@ -212,12 +240,40 @@ class ExerciseActivity : AppCompatActivity() {
         }
         if(exerciseTimer != null){
             exerciseTimer?.cancel()
-            //exerciseProgress = 0
+            exerciseProgress = 0
         }
+        // Shutting down the Text to speech feature when activity is destroyed
+        if(tts != null){
+            tts!!.stop()
+            tts!!.shutdown()
+        }
+        //
 
         binding = null
     }
     /* Overriding onDestroy function ends */
+
+
+    override fun onInit(status: Int) {
+        if(status == TextToSpeech.SUCCESS){
+            val result = tts!!.setLanguage(Locale.US)
+
+            if(result == TextToSpeech.LANG_MISSING_DATA ||
+                result == TextToSpeech.LANG_NOT_SUPPORTED){
+                Log.e("TTS","The language specified is not supported!")
+            }
+        }else{
+            Log.e("TTS","Initialization Failed!")
+        }
+    }
+
+    private fun speakOut(text:String){
+        tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null, " ")
+    }
+
+
+
+
 
 }
 
