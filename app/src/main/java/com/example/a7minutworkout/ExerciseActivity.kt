@@ -84,7 +84,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
         binding?.progressBar?.setOnClickListener {
             if (!isOn) {
-                setExerciseProgressBar(restProgress)
+                setRestProgressBar(restProgress)
             } else {
                 pauseRestTimer()
             }
@@ -118,16 +118,16 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding?.tvUpcomingLabel?.visibility = View.VISIBLE
         //
 
-        // Speak out the Exercise name:
-        speakOut("Get ready to start ${exerciseList!![currentExercisePosition + 1].getName()} exercise")
-
-
         // Checks if the resTtimer is already running. if so -> cancel it:
         if(restTimer != null){
             restTimer?.cancel()
             restProgress = 0
         }
+
+        // Speak out the Exercise name:
+        speakOut("Get ready for ${exerciseList!![currentExercisePosition + 1].getName()} exercise")
         //
+
         binding?.tvUpcomingExerciseName?.text = exerciseList!![currentExercisePosition + 1].getName()
         // Then set the rest progress bar:
         setRestProgressBar(restProgress)
@@ -182,7 +182,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             override fun onTick(p0: Long) {
                 restProgress = BeginningTime*1000.toLong() - p0
                 binding?.progressBar?.progress = ((BeginningTime*1000.toLong() - restProgress)/1000).toInt()
-                binding?.tvTimer?.text = (BeginningTime - restProgress).toString()
+                binding?.tvTimer?.text = (p0/1000).toString()
             }
             // What do you want to do when it ends:
             override fun onFinish() {
@@ -221,6 +221,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 if(currentExercisePosition < exerciseList?.size!! -1){
                     setupRestView()
                 }else{
+                    speakOut("Congratulations! You have completed the 7 minut workout.")
                     Toast.makeText(
                         this@ExerciseActivity,
                         "Congratulations! You have completed the 7 minut workout.",
@@ -262,6 +263,11 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             exerciseTimer?.cancel()
             exerciseProgress = 0
         }
+
+        if(player != null){
+            player!!.stop()
+        }
+
         // Shutting down the Text to speech feature when activity is destroyed
         if(tts != null){
             tts!!.stop()
