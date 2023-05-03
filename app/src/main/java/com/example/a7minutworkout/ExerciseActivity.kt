@@ -23,7 +23,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
 
     private var restTimer: CountDownTimer? = null // RestTimer for time you want to rest
-    private var restProgress = 0
+    private var restProgress : Long = 0
     private var BeginningTime = 5
     private var isOn = true
 
@@ -82,6 +82,14 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
             isOn = isOn != true
         }
+        binding?.progressBar?.setOnClickListener {
+            if (!isOn) {
+                setExerciseProgressBar(restProgress)
+            } else {
+                pauseRestTimer()
+            }
+            isOn = isOn != true
+        }
     }
     /* Overriding the onCreate function ends */
 
@@ -98,6 +106,8 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             e.printStackTrace()
         }
 
+
+
         // Change the visibility from restProgress to ExerciseProgress:
         binding?.flRestView?.visibility = View.VISIBLE
         binding?.tvTitle?.visibility = View.VISIBLE
@@ -108,6 +118,10 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding?.tvUpcomingLabel?.visibility = View.VISIBLE
         //
 
+        // Speak out the Exercise name:
+        speakOut("Get ready to start ${exerciseList!![currentExercisePosition + 1].getName()} exercise")
+
+
         // Checks if the resTtimer is already running. if so -> cancel it:
         if(restTimer != null){
             restTimer?.cancel()
@@ -116,7 +130,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         //
         binding?.tvUpcomingExerciseName?.text = exerciseList!![currentExercisePosition + 1].getName()
         // Then set the rest progress bar:
-        setRestProgressBar()
+        setRestProgressBar(restProgress)
         //
     }
     /* Declaration of setupRestView function ends */
@@ -142,7 +156,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         //
 
         // Speak out the Exercise name:
-        speakOut(exerciseList!![currentExercisePosition].getName())
+        speakOut("Now, Start ${exerciseList!![currentExercisePosition].getName()} exercise")
 
 
         // Set Exercise progress bar:
@@ -156,18 +170,18 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
 
     /* Declaration of setRestProgressBar starts */
-    private fun setRestProgressBar(){
+    private fun setRestProgressBar(RestProgressL : Long){
         //Data Binding:
         binding?.progressBar?.max = BeginningTime
-        binding?.progressBar?.progress = restProgress
+        binding?.progressBar?.progress = (restProgress - RestProgressL).toInt()
 
         /* Creating the Object of the rest timer (instance) starts */
-        restTimer = object: CountDownTimer(BeginningTime*1000.toLong() , 1000){
+        restTimer = object: CountDownTimer(BeginningTime*1000.toLong() - RestProgressL , 1000){
 
             // What do you want to do in every single Tick:
             override fun onTick(p0: Long) {
-                restProgress++
-                binding?.progressBar?.progress = BeginningTime - restProgress
+                restProgress = BeginningTime*1000.toLong() - p0
+                binding?.progressBar?.progress = ((BeginningTime*1000.toLong() - restProgress)/1000).toInt()
                 binding?.tvTimer?.text = (BeginningTime - restProgress).toString()
             }
             // What do you want to do when it ends:
@@ -226,6 +240,12 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun pauseExerciseTimer(){
         if(exerciseTimer != null){
             exerciseTimer!!.cancel()
+        }
+    }
+
+    private fun pauseRestTimer(){
+        if(restTimer != null){
+            restTimer!!.cancel()
         }
     }
 
