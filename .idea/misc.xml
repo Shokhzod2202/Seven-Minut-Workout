@@ -9,9 +9,13 @@
         <entry key="..\:/Users/1234/AndroidStudioProjects/7MinutWorkout/app/src/main/res/drawable/item_circular_color_accent_background.xml" value="0.2351851851851852" />
         <entry key="..\:/Users/1234/AndroidStudioProjects/7MinutWorkout/app/src/main/res/drawable/item_circular_color_accent_border.xml" value="0.2388888888888889" />
         <entry key="..\:/Users/1234/AndroidStudioProjects/7MinutWorkout/app/src/main/res/drawable/item_circular_color_gray_background.xml" value="0.26205128205128203" />
+        <entry key="..\:/Users/1234/AndroidStudioProjects/7MinutWorkout/app/src/main/res/drawable/item_circular_thin_color_accent_border.xml" value="0.27314814814814814" />
         <entry key="..\:/Users/1234/AndroidStudioProjects/7MinutWorkout/app/src/main/res/drawable/item_color_accent_border_ripple_background.xml" value="0.2388888888888889" />
+        <entry key="..\:/Users/1234/AndroidStudioProjects/7MinutWorkout/app/src/main/res/layout/activity_bmi.xml" value="0.25" />
+        <entry key="..\:/Users/1234/AndroidStudioProjects/7MinutWorkout/app/src/main/res/layout/activity_end.xml" value="0.264" />
         <entry key="..\:/Users/1234/AndroidStudioProjects/7MinutWorkout/app/src/main/res/layout/activity_exercise.xml" value="0.264" />
         <entry key="..\:/Users/1234/AndroidStudioProjects/7MinutWorkout/app/src/main/res/layout/activity_main.xml" value="0.32457496136012365" />
+        <entry key="..\:/Users/1234/AndroidStudioProjects/7MinutWorkout/app/src/main/res/layout/dialog_custom_back_confirmation.xml" value="0.25" />
         <entry key="..\:/Users/1234/AndroidStudioProjects/7MinutWorkout/app/src/main/res/layout/item_exercise_status.xml" value="0.536" />
       </map>
     </option>
