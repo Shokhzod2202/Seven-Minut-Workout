@@ -200,7 +200,9 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             // What do you want to do when it ends:
             override fun onFinish() {
                 currentExercisePosition++
-               setupExerciseView()
+                exerciseList!![currentExercisePosition].setIsSelected(true)
+                exerciseAdapter!!.notifyDataSetChanged()
+                setupExerciseView()
             }
 
         }.start()
@@ -231,6 +233,11 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
             // Overriding function onFinish:
             override fun onFinish() {
+
+                exerciseList!![currentExercisePosition].setIsSelected(false)
+                exerciseList!![currentExercisePosition].setIsComplete(true)
+                exerciseAdapter!!.notifyDataSetChanged()
+
                 if(currentExercisePosition < exerciseList?.size!! -1){
                     setupRestView()
                 }else{
