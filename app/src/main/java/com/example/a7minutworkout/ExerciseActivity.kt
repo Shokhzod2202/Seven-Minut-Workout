@@ -9,6 +9,7 @@ import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a7minutworkout.databinding.ActivityExerciseBinding
 import java.util.*
 import kotlin.collections.ArrayList
@@ -36,6 +37,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private var tts: TextToSpeech? = null
     private var player: MediaPlayer? = null
+    private var exerciseAdapter : ExerciseStatusAdapter? = null
 
     /*  Declaration of  GLOBAL VARIABLES ends */
 
@@ -73,6 +75,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         /* Calling setupRestView function starts */
         setupRestView()
+        setupExerciseStatusRecycleView()
         /* Calling setupRestView function ends */
         binding?.progressBarExercise?.setOnClickListener {
             if (!isOn) {
@@ -92,6 +95,16 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
     /* Overriding the onCreate function ends */
+
+    private fun setupExerciseStatusRecycleView(){
+        binding?.rvExerciseStatus?.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        exerciseAdapter = ExerciseStatusAdapter(exerciseList!!)
+        binding?.rvExerciseStatus?.adapter = exerciseAdapter
+
+    }
+
 
     /* Declaration of setupRestView function starts */
     private fun setupRestView(){
