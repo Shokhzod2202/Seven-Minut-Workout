@@ -24,5 +24,7 @@ class BMIActivity : AppCompatActivity() {
             onBackPressed()
         }
 
+        println("This is in master branch change to study git")
+
     }
 }
